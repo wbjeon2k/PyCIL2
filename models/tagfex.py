@@ -1,3 +1,4 @@
+# Please note that "dataset" in .json should be "augmented_cifar100" or "augmented_cifar10". Other datasets are not supported.
 import logging
 import numpy as np
 from tqdm import tqdm

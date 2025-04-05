@@ -8,7 +8,7 @@ from convs.ucir_cifar_resnet import resnet32 as cosine_resnet32
 from convs.ucir_resnet import resnet18 as cosine_resnet18
 from convs.ucir_resnet import resnet34 as cosine_resnet34
 from convs.ucir_resnet import resnet50 as cosine_resnet50
-from convs.linears import SimpleLinear, SplitCosineLinear, CosineLinear
+from convs.linears import SimpleLinear, SplitCosineLinear, CosineLinear, TagFex_SimpleLinear
 from convs.modified_represnet import resnet18_rep,resnet34_rep
 from convs.resnet_cbam import resnet18_cbam,resnet34_cbam,resnet50_cbam
 from convs.memo_resnet import  get_resnet18_imagenet as get_memo_resnet18 #for MEMO imagenet
@@ -1050,19 +1050,19 @@ class TagFexNet(nn.Module):
         self.aux_fc = None
         self.task_sizes = []
         self.args = args
-        
-        
-        #self.ta_net.to(self.device)
+
         self._device = args["device"][0]
         self.ta_net = get_convnet(args).to(self._device)
+
         if hasattr(self.ta_net, 'fc'):
             self.ta_net.fc = None
         self.ts_attn = None
         self.trans_classifier = None
+
         self.projector = nn.Sequential(
-            nn.Linear(self.ta_feature_dim, self.args["proj_hidden_dim"]),
-            nn.ReLU(),
-            nn.Linear(self.args["proj_hidden_dim"], self.args["proj_output_dim"]),
+            TagFex_SimpleLinear(self.ta_feature_dim, self.args["proj_hidden_dim"]),
+            nn.ReLU(True),
+            TagFex_SimpleLinear(self.args["proj_hidden_dim"], self.args["proj_output_dim"]),
         ).to(self._device)
         self.predictor = None
 
@@ -1167,7 +1167,7 @@ class TagFexNet(nn.Module):
         self.trans_classifier = self.generate_fc(self.ta_net.out_dim, new_task_size).to(self._device)
 
     def generate_fc(self, in_dim, out_dim):
-        fc = nn.Linear(in_dim, out_dim).to(self._device)
+        fc = TagFex_SimpleLinear(in_dim, out_dim).to(self._device)
 
         return fc
 
