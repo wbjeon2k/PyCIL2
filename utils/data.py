@@ -1,7 +1,8 @@
 import numpy as np
 from torchvision import datasets, transforms
 from utils.toolkit import split_images_labels
-
+from . import autoaugment
+from . import ops
 
 class iData(object):
     train_trsf = []
@@ -64,6 +65,25 @@ class iCIFAR100(iData):
         self.test_data, self.test_targets = test_dataset.data, np.array(
             test_dataset.targets
         )
+class Augmented_iCIFAR100(iCIFAR100):
+    train_trsf = [
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.ColorJitter(brightness=63 / 255),
+        autoaugment.CIFAR10Policy(),
+        transforms.ToTensor(),
+        ops.Cutout(n_holes=1, length=16),
+    ]
+
+class Augmented_iCIFAR10(iCIFAR10):
+    train_trsf = [
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.ColorJitter(brightness=63 / 255),
+        autoaugment.CIFAR10Policy(),
+        transforms.ToTensor(),
+        ops.Cutout(n_holes=1, length=16),
+    ]
 
 
 class iImageNet1000(iData):
