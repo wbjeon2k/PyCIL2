@@ -196,6 +196,9 @@ class iCaRL(BaseLearner):
                     train_acc,
                 )
             prog_bar.set_description(info)
+        logging.info(info)
+
+
 def _KD_loss(pred, soft, T):
     pred = torch.log_softmax(pred / T, dim=1)
     soft = torch.softmax(soft / T, dim=1)
