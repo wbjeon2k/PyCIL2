@@ -8,7 +8,7 @@ from tqdm import tqdm
 import torch
 
 class DataManager(object):
-    def __init__(self, dataset_name, shuffle, seed, init_cls, increment, aug):
+    def __init__(self, dataset_name, shuffle, seed, init_cls, increment, aug=1):
         self.dataset_name = dataset_name
         self.aug = aug
         self._setup_data(dataset_name, shuffle, seed)
@@ -268,7 +268,7 @@ class DummyDataset(Dataset):
             if self.use_path:
                 images = [self.trsf(pil_loader(self.images[idx])) for _ in range(self.aug)]
             else:
-                images = [self.trsf(Image.fromarray(self.images[idx]))for _ in range(self.aug)]
+                images = [self.trsf(Image.fromarray(self.images[idx])) for _ in range(self.aug)]
             label = self.labels[idx]
             return idx, *images, label
 
