@@ -12,6 +12,7 @@ from utils.toolkit import target2onehot, tensor2numpy
 
 EPSILON = 1e-8
 
+
 init_epoch = 200
 init_lr = 0.1
 init_milestones = [60, 120, 170]
@@ -214,4 +215,3 @@ def _KD_loss(pred, soft, T):
     pred = torch.log_softmax(pred / T, dim=1)
     soft = torch.softmax(soft / T, dim=1)
     return -1 * torch.mul(soft, pred).sum() / pred.shape[0]
-
