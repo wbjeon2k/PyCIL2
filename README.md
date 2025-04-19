@@ -60,6 +60,7 @@ Welcome to PyCIL, perhaps the toolbox for class-incremental learning with the **
 
 
 ## What's New
+- [2025-04]🌟 Add [TagFex](https://arxiv.org/abs/2503.00823). State-of-the-art method of 2025!
 - [2025-03]🌟 Check out our [latest work](https://arxiv.org/abs/2503.08510) on class-incremental learning with CLIP!
 - [2025-03]🌟 Check out our [latest work](https://arxiv.org/abs/2503.00823) on class-incremental learning (**CVPR 2025**)! 
 - [2025-02]🌟 Check out our [latest work](https://arxiv.org/abs/2410.00911) on pre-trained model-based domain-incremental learning (**CVPR 2025**)! 
@@ -112,7 +113,7 @@ For more information about incremental learning, you can refer to these reading 
 -  `DS-AL`: A Dual-Stream Analytic Learning for Exemplar-Free Class-Incremental Learning. AAAI 2024 [[paper](https://arxiv.org/abs/2403.17503)]
 -  `SimpleCIL`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
 -  `Aper`: Revisiting Class-Incremental Learning with Pre-Trained Models: Generalizability and Adaptivity are All You Need. IJCV 2024 [[paper](https://arxiv.org/abs/2303.07338)]
-
+-  `TagFex`: Task-Agnostic Guided Feature Expansion for Class-Incremental Learning. CVPR 2025 [[paper](https://arxiv.org/abs/2503.00823)]
 
 
 ## Reproduced Results
