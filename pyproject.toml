@@ -33,3 +33,4 @@ dependencies = [
 
 [project.scripts]
 pycil2 = "pycil2.main:main"
+pycil2-rmm = "pycil2.rmm_train:main"
