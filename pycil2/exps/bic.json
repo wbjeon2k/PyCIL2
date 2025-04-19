@@ -1,0 +1,23 @@
+{
+    "prefix": "reproduce",
+    "dataset": "cifar100",
+    "memory_size": 2000,
+    "memory_per_class": 20,
+    "fixed_memory": false,
+    "shuffle": true,
+    "init_cls": 10,
+    "increment": 10,
+    "model_name": "bic",
+    "convnet_type": "resnet32",
+    "device": ["0","1","2","3"],
+    "seed": [1993],
+    "epochs": 170,
+    "lrate": 0.1,
+    "milestones": [60, 100, 140],
+    "lrate_decay": 0.1,
+    "batch_size": 128,
+    "split_ratio": 0.1,
+    "T": 2,
+    "weight_decay": 2e-4,
+    "num_workers": 8
+}

@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="#Introduction">Introduction</a> •
+  <a href="#Installation">Installation</a> •
   <a href="#Methods-Reproduced">Methods Reproduced</a> •
   <a href="#Reproduced-Results">Reproduced Results</a> •  
   <a href="#how-to-use">How To Use</a> •
@@ -17,6 +18,54 @@
 </div>
 
 ---
+
+## Installation
+
+### Using pip
+
+You can install the package directly from PyPI:
+
+```bash
+pip install pycil2
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/yourusername/pycil2.git
+cd pycil2
+pip install -e .
+```
+
+### Listing Available Models
+
+After installation, you can list all available models:
+
+```python
+from pycil2.utils.cfg import print_available_models
+
+# Print all available models
+print_available_models()
+
+# Search for specific models
+from pycil2.utils.cfg import search_models
+print(search_models("foster"))  # Will show models containing "foster"
+```
+
+### Using Configuration Files
+
+You can access and modify model configurations:
+
+```python
+from pycil2.utils.cfg import get_model_config
+
+# Get configuration for a specific model
+config = get_model_config("bic")
+print(config)
+
+# Modify configuration as needed
+config["batch_size"] = 64
+```
 
 
 

@@ -30,3 +30,6 @@ dependencies = [
 [project.urls]
 "Homepage" = "https://github.com/yourusername/pycil2"
 "Bug Tracker" = "https://github.com/yourusername/pycil2/issues"
+
+[project.scripts]
+pycil2 = "pycil2.main:main"
