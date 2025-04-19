@@ -24,5 +24,20 @@
     "transfer_factor":1,
     "aux_factor":2,
     "contrast_kd_factor":2,
-    "aug":2
+    "aug":2,
+    "init_epoch": 200,
+    "init_lr": 0.1,
+    "init_milestones": [60, 120, 170],
+    "init_lr_decay": 0.1,
+    "init_weight_decay": 0.0005,
+    "momentum": 0.9,
+    "epochs": 170,
+    "lrate": 0.1,
+    "milestones": [80, 120, 150],
+    "lrate_decay": 0.1,
+    "batch_size": 128,
+    "weight_decay": 0.0002,
+    "num_workers": 8,
+    "T": 2,
+    "eval_freq": 5
 }

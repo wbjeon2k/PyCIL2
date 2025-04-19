@@ -13,24 +13,6 @@ from pycil2.utils.toolkit import target2onehot, tensor2numpy
 
 EPSILON = 1e-8
 
-init_epoch = 200
-init_lr = 0.1
-init_milestones = [60, 120, 170]
-init_lr_decay = 0.1
-init_weight_decay = 0.0005
-
-
-epochs = 180
-lrate = 0.1
-milestones = [70, 120, 150]
-lrate_decay = 0.1
-batch_size = 128
-weight_decay = 2e-4
-num_workers = 4
-T = 2
-lamda = 1000
-fishermax = 0.0001
-
 
 class EWC(BaseLearner):
     def __init__(self, args):
@@ -57,13 +39,13 @@ class EWC(BaseLearner):
             mode="train",
         )
         self.train_loader = DataLoader(
-            train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers
+            train_dataset, batch_size=self.args["batch_size"], shuffle=True, num_workers=self.args["num_workers"]
         )
         test_dataset = data_manager.get_dataset(
             np.arange(0, self._total_classes), source="test", mode="test"
         )
         self.test_loader = DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers
+            test_dataset, batch_size=self.args["batch_size"], shuffle=False, num_workers=self.args["num_workers"]
         )
 
         if len(self._multiple_gpus) > 1:
@@ -94,28 +76,28 @@ class EWC(BaseLearner):
         if self._cur_task == 0:
             optimizer = optim.SGD(
                 self._network.parameters(),
-                momentum=0.9,
-                lr=init_lr,
-                weight_decay=init_weight_decay,
+                momentum=self.args["momentum"],
+                lr=self.args["init_lr"],
+                weight_decay=self.args["init_weight_decay"],
             )
             scheduler = optim.lr_scheduler.MultiStepLR(
-                optimizer=optimizer, milestones=init_milestones, gamma=init_lr_decay
+                optimizer=optimizer, milestones=self.args["init_milestones"], gamma=self.args["init_lr_decay"]
             )
             self._init_train(train_loader, test_loader, optimizer, scheduler)
         else:
             optimizer = optim.SGD(
                 self._network.parameters(),
-                lr=lrate,
-                momentum=0.9,
-                weight_decay=weight_decay,
+                lr=self.args["lrate"],
+                momentum=self.args["momentum"],
+                weight_decay=self.args["weight_decay"],
             )
             scheduler = optim.lr_scheduler.MultiStepLR(
-                optimizer=optimizer, milestones=milestones, gamma=lrate_decay
+                optimizer=optimizer, milestones=self.args["milestones"], gamma=self.args["lrate_decay"]
             )
             self._update_representation(train_loader, test_loader, optimizer, scheduler)
 
     def _init_train(self, train_loader, test_loader, optimizer, scheduler):
-        prog_bar = tqdm(range(init_epoch))
+        prog_bar = tqdm(range(self.args["init_epoch"]))
         for _, epoch in enumerate(prog_bar):
             self._network.train()
             losses = 0.0
@@ -136,12 +118,12 @@ class EWC(BaseLearner):
             scheduler.step()
             train_acc = np.around(tensor2numpy(correct) * 100 / total, decimals=2)
             
-            if epoch % 5 == 0:
+            if epoch % self.args["eval_freq"] == 0:
                 test_acc = self._compute_accuracy(self._network, test_loader)
                 info = "Task {}, Epoch {}/{} => Loss {:.3f}, Train_accy {:.2f}, Test_accy {:.2f}".format(
                     self._cur_task,
                     epoch + 1,
-                    init_epoch,
+                    self.args["init_epoch"],
                     losses / len(train_loader),
                     train_acc,
                     test_acc,
@@ -150,7 +132,7 @@ class EWC(BaseLearner):
                 info = "Task {}, Epoch {}/{} => Loss {:.3f}, Train_accy {:.2f}".format(
                     self._cur_task,
                     epoch + 1,
-                    init_epoch,
+                    self.args["init_epoch"],
                     losses / len(train_loader),
                     train_acc,
                 )
@@ -160,7 +142,7 @@ class EWC(BaseLearner):
         logging.info(info)
 
     def _update_representation(self, train_loader, test_loader, optimizer, scheduler):
-        prog_bar = tqdm(range(epochs))
+        prog_bar = tqdm(range(self.args["epochs"]))
         for _, epoch in enumerate(prog_bar):
             self._network.train()
             losses = 0.0
@@ -173,7 +155,7 @@ class EWC(BaseLearner):
                     logits[:, self._known_classes :], targets - self._known_classes
                 )
                 loss_ewc = self.compute_ewc()
-                loss = loss_clf + lamda * loss_ewc
+                loss = loss_clf + self.args["lamda"] * loss_ewc
 
                 optimizer.zero_grad()
                 loss.backward()
@@ -186,12 +168,12 @@ class EWC(BaseLearner):
 
             scheduler.step()
             train_acc = np.around(tensor2numpy(correct) * 100 / total, decimals=2)
-            if epoch % 5 == 0:
+            if epoch % self.args["eval_freq"] == 0:
                 test_acc = self._compute_accuracy(self._network, test_loader)
                 info = "Task {}, Epoch {}/{} => Loss {:.3f}, Train_accy {:.2f}, Test_accy {:.2f}".format(
                     self._cur_task,
                     epoch + 1,
-                    epochs,
+                    self.args["epochs"],
                     losses / len(train_loader),
                     train_acc,
                     test_acc,
@@ -200,7 +182,7 @@ class EWC(BaseLearner):
                 info = "Task {}, Epoch {}/{} => Loss {:.3f}, Train_accy {:.2f}".format(
                     self._cur_task,
                     epoch + 1,
-                    epochs,
+                    self.args["epochs"],
                     losses / len(train_loader),
                     train_acc,
                 )
@@ -238,7 +220,7 @@ class EWC(BaseLearner):
             if p.requires_grad
         }
         self._network.train()
-        optimizer = optim.SGD(self._network.parameters(), lr=lrate)
+        optimizer = optim.SGD(self._network.parameters(), lr=self.args["lrate"])
         for i, (_, inputs, targets) in enumerate(train_loader):
             inputs, targets = inputs.to(self._device), targets.to(self._device)
             logits = self._network(inputs)["logits"]
@@ -250,5 +232,5 @@ class EWC(BaseLearner):
                     fisher[n] += p.grad.pow(2).clone()
         for n, p in fisher.items():
             fisher[n] = p / len(train_loader)
-            fisher[n] = torch.min(fisher[n], torch.tensor(fishermax))
+            fisher[n] = torch.min(fisher[n], torch.tensor(self.args["fishermax"]))
         return fisher

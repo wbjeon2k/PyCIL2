@@ -9,17 +9,6 @@ from pycil2.models.base import BaseLearner
 from pycil2.utils.inc_net import CosineIncrementalNet
 from pycil2.utils.toolkit import tensor2numpy
 
-epochs = 160
-lrate = 0.1
-ft_epochs = 20
-ft_lrate = 0.005
-batch_size = 128
-lambda_c_base = 5
-lambda_f_base = 1
-nb_proxy = 10
-weight_decay = 5e-4
-num_workers = 4
-
 """
 Distillation losses: POD-flat (lambda_f=1) + POD-spatial (lambda_c=5)
 NME results are shown.
@@ -53,7 +42,7 @@ class PODNet(BaseLearner):
     def __init__(self, args):
         super().__init__(args)
         self._network = CosineIncrementalNet(
-            args, pretrained=False, nb_proxy=nb_proxy
+            args, pretrained=False, nb_proxy=self.args["nb_proxy"]
         )
         self._class_means = None
 
@@ -83,10 +72,10 @@ class PODNet(BaseLearner):
             np.arange(0, self._total_classes), source="test", mode="test"
         )
         self.train_loader = DataLoader(
-            train_dset, batch_size=batch_size, shuffle=True, num_workers=num_workers
+            train_dset, batch_size=self.args["batch_size"], shuffle=True, num_workers=self.args["num_workers"]
         )
         self.test_loader = DataLoader(
-            test_dset, batch_size=batch_size, shuffle=False, num_workers=num_workers
+            test_dset, batch_size=self.args["batch_size"], shuffle=False, num_workers=self.args["num_workers"]
         )
 
         self._train(data_manager, self.train_loader, self.test_loader)
@@ -113,7 +102,7 @@ class PODNet(BaseLearner):
                 lambda p: id(p) not in ignored_params, self._network.parameters()
             )
             network_params = [
-                {"params": base_params, "lr": lrate, "weight_decay": weight_decay},
+                {"params": base_params, "lr": self.args["lrate"], "weight_decay": self.args["weight_decay"]},
                 {
                     "params": self._network.fc.fc1.parameters(),
                     "lr": 0,
@@ -121,12 +110,12 @@ class PODNet(BaseLearner):
                 },
             ]
         optimizer = optim.SGD(
-            network_params, lr=lrate, momentum=0.9, weight_decay=weight_decay
+            network_params, lr=self.args["lrate"], momentum=0.9, weight_decay=self.args["weight_decay"]
         )
         scheduler = optim.lr_scheduler.CosineAnnealingLR(
-            optimizer=optimizer, T_max=epochs
+            optimizer=optimizer, T_max=self.args["epochs"]
         )
-        self._run(train_loader, test_loader, optimizer, scheduler, epochs)
+        self._run(train_loader, test_loader, optimizer, scheduler, self.args["epochs"])
 
         if self._cur_task == 0:
             return
@@ -146,9 +135,9 @@ class PODNet(BaseLearner):
         )
         finetune_train_loader = DataLoader(
             finetune_train_dataset,
-            batch_size=batch_size,
+            batch_size=self.args["batch_size"],
             shuffle=True,
-            num_workers=num_workers,
+            num_workers=self.args["num_workers"],
         )
         logging.info(
             "The size of finetune dataset: {}".format(len(finetune_train_dataset))
@@ -159,16 +148,16 @@ class PODNet(BaseLearner):
             lambda p: id(p) not in ignored_params, self._network.parameters()
         )
         network_params = [
-            {"params": base_params, "lr": ft_lrate, "weight_decay": weight_decay},
+            {"params": base_params, "lr": self.args["ft_lrate"], "weight_decay": self.args["weight_decay"]},
             {"params": self._network.fc.fc1.parameters(), "lr": 0, "weight_decay": 0},
         ]
         optimizer = optim.SGD(
-            network_params, lr=ft_lrate, momentum=0.9, weight_decay=weight_decay
+            network_params, lr=self.args["ft_lrate"], momentum=0.9, weight_decay=self.args["weight_decay"]
         )
         scheduler = optim.lr_scheduler.CosineAnnealingLR(
-            optimizer=optimizer, T_max=ft_epochs
+            optimizer=optimizer, T_max=self.args["ft_epochs"]
         )
-        self._run(finetune_train_loader, test_loader, optimizer, scheduler, ft_epochs)
+        self._run(finetune_train_loader, test_loader, optimizer, scheduler, self.args["ft_epochs"])
 
         if self._fixed_memory:
             self._data_memory = self._data_memory[
@@ -215,10 +204,10 @@ class PODNet(BaseLearner):
                             torch.ones(inputs.shape[0]).to(self._device),
                         )
                         * self.factor
-                        * lambda_f_base
+                        * self.args["lambda_f_base"]
                     )
                     spatial_loss = (
-                        pod_spatial_loss(fmaps, old_fmaps) * self.factor * lambda_c_base
+                        pod_spatial_loss(fmaps, old_fmaps) * self.factor * self.args["lambda_c_base"]
                     )
 
                 loss = lsc_loss + flat_loss + spatial_loss
