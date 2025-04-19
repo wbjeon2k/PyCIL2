@@ -1,4 +1,5 @@
-# Please note that "dataset" in .json should be "augmented_cifar100" or "augmented_cifar10". Other datasets are not supported.
+# Please note that only "cifar100_aa" and "cifar10_aa" are supported for TagFex in PyCIL.
+# For large datasets like ImageNet, please refer to the offical code repo https://github.com/bwnzheng/TagFex_CVPR2025.
 import logging
 import numpy as np
 from tqdm import tqdm
@@ -126,6 +127,7 @@ class TagFex(BaseLearner):
                 )
             else:
                 self._network.weight_align(self._total_classes - self._known_classes)
+
     def _compute_accuracy(self, model, loader):
         model.eval()
         correct, total = 0, 0
@@ -138,6 +140,7 @@ class TagFex(BaseLearner):
             total += len(targets)
 
         return np.around(tensor2numpy(correct) * 100 / total, decimals=2)
+
     def _init_train(self, train_loader, test_loader, optimizer, scheduler):
         
         prog_bar = tqdm(range(init_epoch))
@@ -239,19 +242,7 @@ class TagFex(BaseLearner):
                 self.args['aux_factor'] * loss_aux + \
                 self.args['contrast_factor'] * (infonce_loss * (1 - auto_kd_factor) + self.args['contrast_kd_factor'] * kd_loss * auto_kd_factor) + \
                 self.args['trans_cls_factor'] * trans_cls_loss + \
-                self.args['transfer_factor'] * transfer_loss
-                """
-                
-                {
-                'ta_feature': ta_feature,
-                'embedding': embedding,
-                'trans_logits': trans_logits,
-                'predicted_feature': predicted_feature,
-                'features': features
-                'logits': logits
-                'aux_logits':aux_logits
-                }
-                """               
+                self.args['transfer_factor'] * transfer_loss         
 
                 optimizer.zero_grad()
                 loss.backward()
@@ -289,6 +280,7 @@ class TagFex(BaseLearner):
                 )
             prog_bar.set_description(info)
         logging.info(info)
+
 def infoNCE_loss(feats, t):
     cos_sim = F.cosine_similarity(feats[:,None,:], feats[None,:,:], dim=-1)
     # Mask out cosine similarity to itself

@@ -65,7 +65,9 @@ class iCIFAR100(iData):
         self.test_data, self.test_targets = test_dataset.data, np.array(
             test_dataset.targets
         )
-class Augmented_iCIFAR100(iCIFAR100):
+
+
+class iCIFAR100_AA(iCIFAR100):
     train_trsf = [
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(p=0.5),
@@ -75,7 +77,8 @@ class Augmented_iCIFAR100(iCIFAR100):
         ops.Cutout(n_holes=1, length=16),
     ]
 
-class Augmented_iCIFAR10(iCIFAR10):
+
+class iCIFAR10_AA(iCIFAR10):
     train_trsf = [
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(p=0.5),
