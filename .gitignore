@@ -1,5 +1,7 @@
 .devcontainer
+build
 data/
 __pycache__/
 logs/
 .vscode/
+pycil2.egg-info

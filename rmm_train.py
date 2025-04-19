@@ -7,16 +7,16 @@ python rmm_train.py --config=./exps/rmm-pretrain.json
 '''
 import json
 import argparse
-from trainer import train
+from pycil2.trainer import train
 import sys
 import logging
 import copy
 import torch
-from utils import factory
-from utils.data_manager import DataManager
-from utils.rl_utils.ddpg import DDPG
-from utils.rl_utils.rl_utils import ReplayBuffer
-from utils.toolkit import count_parameters
+from pycil2.utils import factory
+from pycil2.utils.data_manager import DataManager
+from pycil2.utils.rl_utils.ddpg import DDPG
+from pycil2.utils.rl_utils.rl_utils import ReplayBuffer
+from pycil2.utils.toolkit import count_parameters
 import os
 import numpy as np
 import random

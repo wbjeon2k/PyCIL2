@@ -1,6 +1,6 @@
 import json
 import argparse
-from trainer import train
+from pycil2.trainer import train
 
 
 def main():

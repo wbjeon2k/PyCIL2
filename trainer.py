@@ -2,9 +2,9 @@ import sys
 import logging
 import copy
 import torch
-from utils import factory
-from utils.data_manager import DataManager
-from utils.toolkit import count_parameters
+from pycil2.utils import factory
+from pycil2.utils.data_manager import DataManager
+from pycil2.utils.toolkit import count_parameters
 import os
 import numpy as np
 

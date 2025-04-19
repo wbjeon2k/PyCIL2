@@ -1,79 +1,79 @@
 def get_model(model_name, args):
     name = model_name.lower()
     if name == "icarl":
-        from models.icarl import iCaRL
+        from pycil2.models.icarl import iCaRL
         return iCaRL(args)
     elif name == "bic":
-        from models.bic import BiC
+        from pycil2.models.bic import BiC
         return BiC(args)
     elif name == "podnet":
-        from models.podnet import PODNet
+        from pycil2.models.podnet import PODNet
         return PODNet(args)
     elif name == "lwf":
-        from models.lwf import LwF
+        from pycil2.models.lwf import LwF
         return LwF(args)
     elif name == "ewc":
-        from models.ewc import EWC
+        from pycil2.models.ewc import EWC
         return EWC(args)
     elif name == "wa":
-        from models.wa import WA
+        from pycil2.models.wa import WA
         return WA(args)
     elif name == "der":
-        from models.der import DER
+        from pycil2.models.der import DER
         return DER(args)
     elif name == "finetune":
-        from models.finetune import Finetune
+        from pycil2.models.finetune import Finetune
         return Finetune(args)
     elif name == "replay":
-        from models.replay import Replay
+        from pycil2.models.replay import Replay
         return Replay(args)
     elif name == "gem":
-        from models.gem import GEM
+        from pycil2.models.gem import GEM
         return GEM(args)
     elif name == "coil":
-        from models.coil import COIL
+        from pycil2.models.coil import COIL
         return COIL(args)
     elif name == "foster":
-        from models.foster import FOSTER
+        from pycil2.models.foster import FOSTER
         return FOSTER(args)
     elif name == "rmm-icarl":
-        from models.rmm import RMM_FOSTER, RMM_iCaRL
+        from pycil2.models.rmm import RMM_FOSTER, RMM_iCaRL
         return RMM_iCaRL(args)
     elif name == "rmm-foster":
-        from models.rmm import RMM_FOSTER, RMM_iCaRL
+        from pycil2.models.rmm import RMM_FOSTER, RMM_iCaRL
         return RMM_FOSTER(args)
     elif name == "fetril":
-        from models.fetril import FeTrIL 
+        from pycil2.models.fetril import FeTrIL 
         return FeTrIL(args)
     elif name == "pass":
-        from models.pa2s import PASS
+        from pycil2.models.pa2s import PASS
         return PASS(args)
     elif name == "il2a":
-        from models.il2a import IL2A
+        from pycil2.models.il2a import IL2A
         return IL2A(args)
     elif name == "ssre":
-        from models.ssre import SSRE
+        from pycil2.models.ssre import SSRE
         return SSRE(args)
     elif name == "memo":   
-        from models.memo import MEMO
+        from pycil2.models.memo import MEMO
         return MEMO(args)
     elif name == "beefiso":
-        from models.beef_iso import BEEFISO
+        from pycil2.models.beef_iso import BEEFISO
         return BEEFISO(args)
     elif name == "simplecil":
-        from models.simplecil import SimpleCIL
+        from pycil2.models.simplecil import SimpleCIL
         return SimpleCIL(args)
     elif name == "acil":
-        from models.acil import ACIL
+        from pycil2.models.acil import ACIL
         return ACIL(args)
     elif name == "ds-al":
-        from models.dsal import DSAL
+        from pycil2.models.dsal import DSAL
         return DSAL(args)
     elif name == "aper_finetune":
-        from models.aper_finetune import APER_FINETUNE
+        from pycil2.models.aper_finetune import APER_FINETUNE
         return APER_FINETUNE(args)
     elif name == "tagfex":
-        from models.tagfex import TagFex
+        from pycil2.models.tagfex import TagFex
         return TagFex(args)
     else:
         assert 0
