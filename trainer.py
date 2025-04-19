@@ -54,6 +54,7 @@ def _train(args):
         args["seed"],
         args["init_cls"],
         args["increment"],
+        args["aug"] if "aug" in args else 1
     )
     model = factory.get_model(args["model_name"], args)
 
@@ -140,7 +141,7 @@ def _train(args):
         print('Accuracy Matrix (NME):')
         print(np_acctable)
         print('Forgetting (NME):', forgetting)
-        logging.info('Forgetting (NME):', forgetting)
+        logging.info('Forgetting (NME): {}'.format(forgetting))
 
 
 def _set_device(args):
@@ -148,7 +149,7 @@ def _set_device(args):
     gpus = []
 
     for device in device_type:
-        if device_type == -1:
+        if device == -1:
             device = torch.device("cpu")
         else:
             device = torch.device("cuda:{}".format(device))
