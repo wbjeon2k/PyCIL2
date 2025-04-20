@@ -39,6 +39,7 @@ class iCIFAR10(iData):
         super().__init__(cls_seq)
 
     def download_data(self, download_path="./data"):
+        #print(f'download path : {download_path}')
         train_dataset = datasets.cifar.CIFAR10(root=download_path, train=True, download=True)
         test_dataset = datasets.cifar.CIFAR10(root=download_path, train=False, download=True)
         self.train_data, self.train_targets = train_dataset.data, np.array(
@@ -72,6 +73,8 @@ class iCIFAR100(iData):
         super().__init__(cls_seq)
 
     def download_data(self, download_path="./data"):
+        #print(f'download path : {download_path}')
+        
         train_dataset = datasets.cifar.CIFAR100(root=download_path, train=True, download=True)
         test_dataset = datasets.cifar.CIFAR100(root=download_path, train=False, download=True)
         self.train_data, self.train_targets = train_dataset.data, np.array(
