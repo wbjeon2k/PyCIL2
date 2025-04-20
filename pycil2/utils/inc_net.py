@@ -80,6 +80,8 @@ def get_inc_net_by_name(inc_net_type: str) -> Callable[[Dict[str, Any], bool], U
     
     if inc_net_type == "basic":
         return IncrementalNet
+    elif inc_net_type == "base":
+        return BaseNet
     elif inc_net_type == "il2a":
         return IL2ANet
     elif inc_net_type == "bias_layer":
