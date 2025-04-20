@@ -16,6 +16,7 @@ class DataManager(object):
             note that when aug > 2, randomized transforms are required to make sense.
         '''
         self.dataset_name = dataset_name
+        #print(f'dset path at datamanager init : {download_path}')
         self.aug = aug
         self._setup_data(dataset_name= dataset_name, download_path=download_path, cls_seq=cls_seq)
         assert init_cls <= len(self._class_order), "No enough classes."

@@ -39,9 +39,10 @@ class Replay(BaseLearner):
         """
         # This is a placeholder that needs to be implemented
         # based on the specific model being used
-        raise NotImplementedError(
-            "Please implement update_classifier based on your model type"
-        )
+        # raise NotImplementedError(
+        #     "Please implement update_classifier based on your model type"
+        # )
+        pass
 
     def incremental_train(self, data_manager : DataManager):
         """Train the model incrementally with replay memory.
