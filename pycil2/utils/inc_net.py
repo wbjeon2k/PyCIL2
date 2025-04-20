@@ -62,7 +62,7 @@ class BaseNet(nn.Module):
         super(BaseNet, self).__init__()
 
         self.convnet = get_convnet(args, pretrained)
-        self.fc = None
+        self.init_fc(args['num_cls'])
 
     @property
     def feature_dim(self):
