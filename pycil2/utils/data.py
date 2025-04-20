@@ -163,9 +163,10 @@ class iImageNet100(iData):
     def __init__(self, cls_seq=None):
         if cls_seq is None:
             cls_seq = np.arange(100).tolist()
-        if len(cls_seq) != 100:
-            raise ValueError(f"ImageNet100 requires 100 classes, but got {len(cls_seq)}")
-        super().__init__(cls_seq)
+        if len(cls_seq) != 1000:
+            raise ValueError(f"ImageNet100 requires 1000 classes, but got {len(cls_seq)}")
+        seq_100 = cls_seq[:100] 
+        super().__init__(seq_100)
 
     def download_data(self, download_path="./data"):
         # assert download_path != "./data", "You should specify the folder of your ImageNet dataset"
