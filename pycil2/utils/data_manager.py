@@ -8,10 +8,16 @@ from tqdm import tqdm
 import torch
 
 class DataManager(object):
-    def __init__(self, dataset_name, shuffle, seed, init_cls, increment, aug=1):
+    def __init__(self, dataset_name, init_cls, increment, aug=1, download_path="./data", cls_seq=None, shuffle=None, seed=None):
+        '''
+        aug : number of transformed versions of an image.
+            if aug==1, return one image transformed.
+            if aug > 1, return aug number of images transformed.
+            note that when aug > 2, randomized transforms are required to make sense.
+        '''
         self.dataset_name = dataset_name
         self.aug = aug
-        self._setup_data(dataset_name, shuffle, seed)
+        self._setup_data(dataset_name, download_path=download_path, cls_seq=cls_seq)
         assert init_cls <= len(self._class_order), "No enough classes."
         self._increments = [init_cls]
         while sum(self._increments) + increment < len(self._class_order):
@@ -185,9 +191,10 @@ class DataManager(object):
             train_data, train_targets, trsf, self.use_path, self.aug
         ), DummyDataset(val_data, val_targets, trsf, self.use_path)
 
-    def _setup_data(self, dataset_name, shuffle, seed):
-        idata = _get_idata(dataset_name)
-        idata.download_data()
+    def _setup_data(self, dataset_name, shuffle=None, seed=None, download_path="./data", cls_seq=None):
+        # Create idata instance with the provided class sequence
+        idata = _get_idata(dataset_name, cls_seq)
+        idata.download_data(download_path)
 
         # Data
         self._train_data, self._train_targets = idata.train_data, idata.train_targets
@@ -199,14 +206,8 @@ class DataManager(object):
         self._test_trsf = idata.test_trsf
         self._common_trsf = idata.common_trsf
 
-        # Order
-        order = [i for i in range(len(np.unique(self._train_targets)))]
-        if shuffle:
-            np.random.seed(seed)
-            order = np.random.permutation(len(order)).tolist()
-        else:
-            order = idata.class_order
-        self._class_order = order
+        # Set class order
+        self._class_order = idata.class_order
         logging.info(self._class_order)
 
         # Map indices
@@ -214,6 +215,17 @@ class DataManager(object):
             self._train_targets, self._class_order
         )
         self._test_targets = _map_new_class_index(self._test_targets, self._class_order)
+        
+    def _get_num_classes(self, dataset_name):
+        name = dataset_name.lower()
+        if name in ["cifar10", "cifar10_aa"]:
+            return 10
+        elif name in ["cifar100", "cifar100_aa", "imagenet100"]:
+            return 100
+        elif name == "imagenet1000":
+            return 1000
+        else:
+            raise NotImplementedError(f"Unknown dataset {dataset_name}")
 
     def _select(self, x, y, low_range, high_range):
         idxes = np.where(np.logical_and(y >= low_range, y < high_range))[0]
@@ -277,20 +289,20 @@ def _map_new_class_index(y, order):
     return np.array(list(map(lambda x: order.index(x), y)))
 
 
-def _get_idata(dataset_name):
+def _get_idata(dataset_name, cls_seq=None):
     name = dataset_name.lower()
     if name == "cifar10":
-        return iCIFAR10()
+        return iCIFAR10(cls_seq)
     elif name == "cifar100":
-        return iCIFAR100()
+        return iCIFAR100(cls_seq)
     elif name == "imagenet1000":
-        return iImageNet1000()
+        return iImageNet1000(cls_seq)
     elif name == "imagenet100":
-        return iImageNet100()
+        return iImageNet100(cls_seq)
     elif name == "cifar100_aa":
-        return iCIFAR100_AA()
+        return iCIFAR100_AA(cls_seq)
     elif name == "cifar10_aa":
-        return iCIFAR10_AA()
+        return iCIFAR10_AA(cls_seq)
     else:
         raise NotImplementedError("Unknown dataset {}.".format(dataset_name))
 

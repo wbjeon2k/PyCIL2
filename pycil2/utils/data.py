@@ -9,6 +9,11 @@ class iData(object):
     test_trsf = []
     common_trsf = []
     class_order = None
+    
+    def __init__(self, cls_seq=None):
+        if cls_seq is None:
+            raise ValueError("cls_seq cannot be None, it must be a sequence of class labels")
+        self.class_order = cls_seq
 
 
 class iCIFAR10(iData):
@@ -25,12 +30,17 @@ class iCIFAR10(iData):
             mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)
         ),
     ]
+    
+    def __init__(self, cls_seq=None):
+        if cls_seq is None:
+            cls_seq = np.arange(10).tolist()
+        if len(cls_seq) != 10:
+            raise ValueError(f"CIFAR10 requires 10 classes, but got {len(cls_seq)}")
+        super().__init__(cls_seq)
 
-    class_order = np.arange(10).tolist()
-
-    def download_data(self):
-        train_dataset = datasets.cifar.CIFAR10("./data", train=True, download=True)
-        test_dataset = datasets.cifar.CIFAR10("./data", train=False, download=True)
+    def download_data(self, download_path="./data"):
+        train_dataset = datasets.cifar.CIFAR10(download_path, train=True, download=True)
+        test_dataset = datasets.cifar.CIFAR10(download_path, train=False, download=True)
         self.train_data, self.train_targets = train_dataset.data, np.array(
             train_dataset.targets
         )
@@ -53,12 +63,17 @@ class iCIFAR100(iData):
             mean=(0.5071, 0.4867, 0.4408), std=(0.2675, 0.2565, 0.2761)
         ),
     ]
+    
+    def __init__(self, cls_seq=None):
+        if cls_seq is None:
+            cls_seq = np.arange(100).tolist()
+        if len(cls_seq) != 100:
+            raise ValueError(f"CIFAR100 requires 100 classes, but got {len(cls_seq)}")
+        super().__init__(cls_seq)
 
-    class_order = np.arange(100).tolist()
-
-    def download_data(self):
-        train_dataset = datasets.cifar.CIFAR100("./data", train=True, download=True)
-        test_dataset = datasets.cifar.CIFAR100("./data", train=False, download=True)
+    def download_data(self, download_path="./data"):
+        train_dataset = datasets.cifar.CIFAR100(download_path, train=True, download=True)
+        test_dataset = datasets.cifar.CIFAR100(download_path, train=False, download=True)
         self.train_data, self.train_targets = train_dataset.data, np.array(
             train_dataset.targets
         )
@@ -76,6 +91,9 @@ class iCIFAR100_AA(iCIFAR100):
         transforms.ToTensor(),
         ops.Cutout(n_holes=1, length=16),
     ]
+    
+    def __init__(self, cls_seq=None):
+        super().__init__(cls_seq)
 
 
 class iCIFAR10_AA(iCIFAR10):
@@ -87,6 +105,9 @@ class iCIFAR10_AA(iCIFAR10):
         transforms.ToTensor(),
         ops.Cutout(n_holes=1, length=16),
     ]
+    
+    def __init__(self, cls_seq=None):
+        super().__init__(cls_seq)
 
 
 class iImageNet1000(iData):
@@ -104,13 +125,18 @@ class iImageNet1000(iData):
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ]
+    
+    def __init__(self, cls_seq=None):
+        if cls_seq is None:
+            cls_seq = np.arange(1000).tolist()
+        if len(cls_seq) != 1000:
+            raise ValueError(f"ImageNet1000 requires 1000 classes, but got {len(cls_seq)}")
+        super().__init__(cls_seq)
 
-    class_order = np.arange(1000).tolist()
-
-    def download_data(self):
-        assert 0, "You should specify the folder of your dataset"
-        train_dir = "[DATA-PATH]/train/"
-        test_dir = "[DATA-PATH]/val/"
+    def download_data(self, download_path="./data"):
+        # assert download_path != "./data", "You should specify the folder of your ImageNet dataset"
+        train_dir = f"{download_path}/train/"
+        test_dir = f"{download_path}/val/"
 
         train_dset = datasets.ImageFolder(train_dir)
         test_dset = datasets.ImageFolder(test_dir)
@@ -133,13 +159,18 @@ class iImageNet100(iData):
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ]
+    
+    def __init__(self, cls_seq=None):
+        if cls_seq is None:
+            cls_seq = np.arange(100).tolist()
+        if len(cls_seq) != 100:
+            raise ValueError(f"ImageNet100 requires 100 classes, but got {len(cls_seq)}")
+        super().__init__(cls_seq)
 
-    class_order = np.arange(1000).tolist()
-
-    def download_data(self):
-        assert 0, "You should specify the folder of your dataset"
-        train_dir = "[DATA-PATH]/train/"
-        test_dir = "[DATA-PATH]/val/"
+    def download_data(self, download_path="./data"):
+        # assert download_path != "./data", "You should specify the folder of your ImageNet dataset"
+        train_dir = f"{download_path}/train/"
+        test_dir = f"{download_path}/val/"
 
         train_dset = datasets.ImageFolder(train_dir)
         test_dset = datasets.ImageFolder(test_dir)

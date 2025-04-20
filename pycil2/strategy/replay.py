@@ -8,7 +8,7 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from pycil2.strategy.base import BaseLearner
 from pycil2.utils.toolkit import tensor2numpy
-
+from pycil2.utils.data_manager import DataManager
 EPSILON = 1e-8
 
 
@@ -43,7 +43,7 @@ class Replay(BaseLearner):
             "Please implement update_classifier based on your model type"
         )
 
-    def incremental_train(self, data_manager):
+    def incremental_train(self, data_manager : DataManager):
         """Train the model incrementally with replay memory.
         
         Args:
