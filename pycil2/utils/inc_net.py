@@ -15,7 +15,7 @@ from pycil2.convs.memo_resnet import  get_resnet18_imagenet as get_memo_resnet18
 from pycil2.convs.memo_cifar_resnet import get_resnet32_a2fc as get_memo_resnet32 #for MEMO cifar
 from pycil2.convs.ACL_buffer import RandomBuffer, activation_t
 from pycil2.convs.linears import RecursiveLinear
-from typing import Dict, Any
+from typing import Dict, Any, Callable, Type, Union
 
 
 def get_convnet(args, pretrained=False):
@@ -55,6 +55,57 @@ def get_convnet(args, pretrained=False):
     
     else:
         raise NotImplementedError("Unknown type {}".format(name))
+
+
+def get_inc_net_by_name(inc_net_type: str) -> Callable[[Dict[str, Any], bool], Union[nn.Module, tuple]]:
+    """
+    Get incremental network class by name.
+    
+    Args:
+        inc_net_type (str): Type of incremental network. 
+                            Options: 'basic', 'il2a', 'bias_layer', 'cosine', 'der', 
+                            'foster', 'adaptive', 'beef_iso', 'simplecosine', 
+                            'multibranch_cosine', 'acil', 'dsal', 'tagfex'
+    
+    Returns:
+        Network class that can be instantiated with args and pretrained flag
+        
+    Example:
+        ```
+        basenet = get_inc_net_by_name('basic')
+        model = basenet(args, pretrained=False)
+        ```
+    """
+    inc_net_type = inc_net_type.lower()
+    
+    if inc_net_type == "basic":
+        return IncrementalNet
+    elif inc_net_type == "il2a":
+        return IL2ANet
+    elif inc_net_type == "bias_layer":
+        return IncrementalNetWithBias
+    elif inc_net_type == "cosine":
+        return CosineIncrementalNet
+    elif inc_net_type == "der":
+        return DERNet
+    elif inc_net_type == "foster":
+        return FOSTERNet
+    elif inc_net_type == "adaptive":
+        return AdaptiveNet
+    elif inc_net_type == "beef_iso":
+        return BEEFISONet
+    elif inc_net_type == "simplecosine":
+        return SimpleCosineIncrementalNet
+    elif inc_net_type == "multibranch_cosine":
+        return MultiBranchCosineIncrementalNet
+    elif inc_net_type == "acil":
+        return ACILNet
+    elif inc_net_type == "dsal":
+        return DSALNet
+    elif inc_net_type == "tagfex":
+        return TagFexNet
+    else:
+        raise NotImplementedError(f"Unknown incremental network type: {inc_net_type}")
 
 
 class BaseNet(nn.Module):
