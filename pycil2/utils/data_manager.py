@@ -17,7 +17,7 @@ class DataManager(object):
         '''
         self.dataset_name = dataset_name
         self.aug = aug
-        self._setup_data(dataset_name, download_path=download_path, cls_seq=cls_seq)
+        self._setup_data(dataset_name= dataset_name, download_path=download_path, cls_seq=cls_seq)
         assert init_cls <= len(self._class_order), "No enough classes."
         self._increments = [init_cls]
         while sum(self._increments) + increment < len(self._class_order):
