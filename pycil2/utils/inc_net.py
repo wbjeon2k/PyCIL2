@@ -84,6 +84,10 @@ class BaseNet(nn.Module):
         out.update(x)
 
         return out
+    
+    def init_fc(self, num_cls):
+        out_dim = self.convnet.out_dim
+        self.fc = SimpleLinear(out_dim, num_cls)
 
     def update_fc(self, nb_classes):
         pass
