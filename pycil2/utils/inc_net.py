@@ -15,7 +15,7 @@ from pycil2.convs.memo_resnet import  get_resnet18_imagenet as get_memo_resnet18
 from pycil2.convs.memo_cifar_resnet import get_resnet32_a2fc as get_memo_resnet32 #for MEMO cifar
 from pycil2.convs.ACL_buffer import RandomBuffer, activation_t
 from pycil2.convs.linears import RecursiveLinear
-from typing import Dict, Any, Callable, Type, Union
+from typing import Dict, Any, Callable, Optional, Type, Union
 
 
 def get_convnet(args, pretrained=False):
@@ -111,7 +111,7 @@ def get_inc_net_by_name(inc_net_type: str) -> Callable[[Dict[str, Any], bool], U
 
 
 class BaseNet(nn.Module):
-    def __init__(self, args, pretrained):
+    def __init__(self, args, pretrained : Optional[bool] = False):
         super(BaseNet, self).__init__()
 
         self.convnet = get_convnet(args, pretrained)
