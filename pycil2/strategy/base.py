@@ -23,6 +23,11 @@ class BaseLearner(object):
     def __init__(self, args):
         self.args = args
         self._cur_task = -1
+        
+        # add prev_known and prev_total to track previous task
+        self._prev_known_classes = 0
+        self._prev_total_classes = 0
+        
         self._known_classes = 0
         self._total_classes = 0
         self._network = None

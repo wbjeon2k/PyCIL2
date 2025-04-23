@@ -25,6 +25,10 @@ class Replay(BaseLearner):
 
     def after_task(self):
         """Update known classes and log exemplar info after a task."""
+        self._prev_known_classes = self._known_classes
+        self._prev_total_classes = self._total_classes
+        
+        
         self._known_classes = self._total_classes
         logging.info("Exemplar size: {}".format(self.exemplar_size))
 
