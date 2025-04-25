@@ -4,6 +4,11 @@ import torch
 from torch import nn
 from pycil2.convs.cifar_resnet import resnet32
 from pycil2.convs.resnet import resnet18, resnet34, resnet50, resnet101, resnet152
+# same convs.resnet but replace batchnorm as groupnorm
+from pycil2.convs.resnet_gn import resnet18 as resnet18gn
+from pycil2.convs.resnet_gn import resnet34 as resnet34gn
+from pycil2.convs.resnet_gn import resnet50 as resnet50gn
+from pycil2.convs.resnet_gn import resnet101 as resnet101gn
 from pycil2.convs.ucir_cifar_resnet import resnet32 as cosine_resnet32
 from pycil2.convs.ucir_resnet import resnet18 as cosine_resnet18
 from pycil2.convs.ucir_resnet import resnet34 as cosine_resnet34
@@ -28,6 +33,12 @@ def get_convnet(args, pretrained=False):
         return resnet34(pretrained=pretrained,args=args)
     elif name == "resnet50":
         return resnet50(pretrained=pretrained,args=args)
+    elif name == "resnet18gn":
+        return resnet18gn(pretrained=pretrained,args=args)
+    elif name == "resnet34gn":
+        return resnet34gn(pretrained=pretrained,args=args)
+    elif name == "resnet50gn":
+        return resnet50gn(pretrained=pretrained,args=args)
     elif name == "cosine_resnet18":
         return cosine_resnet18(pretrained=pretrained,args=args)
     elif name == "cosine_resnet32":
