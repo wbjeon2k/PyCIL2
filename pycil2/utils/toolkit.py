@@ -71,7 +71,8 @@ def accuracy(y_pred, y_true, nb_old, increment=10):
 
     # New accuracy
     idxes = np.where(y_true >= nb_old)[0]
-    logging.info(f"len(idxes) : {len(idxes)}, idxes : {idxes}")
+    if(len(idxes) == 0 or len(idxes) is np.nan):
+        logging.warning(f"len(idxes) : {len(idxes)}, idxes : {idxes}")
     all_acc["new"] = np.around(
         (y_pred[idxes] == y_true[idxes]).sum() * 100 / len(idxes), decimals=2
     )
