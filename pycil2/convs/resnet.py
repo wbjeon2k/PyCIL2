@@ -53,10 +53,10 @@ class BasicBlock(nn.Module):
             raise NotImplementedError("Dilation > 1 not supported in BasicBlock")
         # Both self.conv1 and self.downsample layers downsample the input when stride != 1
         self.conv1 = conv3x3(inplanes, planes, stride)
-        self.bn1 = norm_layer(planes)
+        self.bn1 = norm_layer(planes, track_running_stats=False)
         self.relu = nn.ReLU(inplace=True)
         self.conv2 = conv3x3(planes, planes)
-        self.bn2 = norm_layer(planes)
+        self.bn2 = norm_layer(planes, track_running_stats=False)
         self.downsample = downsample
         self.stride = stride
 
@@ -91,11 +91,11 @@ class Bottleneck(nn.Module):
         width = int(planes * (base_width / 64.)) * groups
         # Both self.conv2 and self.downsample layers downsample the input when stride != 1
         self.conv1 = conv1x1(inplanes, width)
-        self.bn1 = norm_layer(width)
+        self.bn1 = norm_layer(width, track_running_stats=False)
         self.conv2 = conv3x3(width, width, stride, groups, dilation)
-        self.bn2 = norm_layer(width)
+        self.bn2 = norm_layer(width, track_running_stats=False)
         self.conv3 = conv1x1(width, planes * self.expansion)
-        self.bn3 = norm_layer(planes * self.expansion)
+        self.bn3 = norm_layer(planes * self.expansion, track_running_stats=False)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
@@ -153,27 +153,27 @@ class ResNet(nn.Module):
             if args["model_name"] == "memo":
                 self.conv1 = nn.Sequential(
                     nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False),
-                    nn.BatchNorm2d(self.inplanes),
+                    nn.BatchNorm2d(self.inplanes, track_running_stats=False),
                     nn.ReLU(inplace=True),
                     nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
                 )
             else:
                 self.conv1 = nn.Sequential(
                     nn.Conv2d(3, self.inplanes, kernel_size=3, stride=1, padding=1, bias=False),                       
-                    nn.BatchNorm2d(self.inplanes), 
+                    nn.BatchNorm2d(self.inplanes, track_running_stats=False), 
                     nn.ReLU(inplace=True))
         elif 'imagenet' in args["dataset"]:
             if args["init_cls"] == args["increment"]:
                 self.conv1 = nn.Sequential(
                     nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False),
-                    nn.BatchNorm2d(self.inplanes),
+                    nn.BatchNorm2d(self.inplanes, track_running_stats=False),
                     nn.ReLU(inplace=True),
                     nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
                 )
             else:
                 self.conv1 = nn.Sequential(
                     nn.Conv2d(3, self.inplanes, kernel_size=3, stride=1, padding=1, bias=False),
-                    nn.BatchNorm2d(self.inplanes),
+                    nn.BatchNorm2d(self.inplanes, track_running_stats=False),
                     nn.ReLU(inplace=True),
                     nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
                 )
@@ -217,7 +217,7 @@ class ResNet(nn.Module):
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
                 conv1x1(self.inplanes, planes * block.expansion, stride),
-                norm_layer(planes * block.expansion),
+                norm_layer(planes * block.expansion , track_running_stats=False),
             )
 
         layers = []
